@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2024年のTrinoへのコントリビュートまとめ</title>
+    <link rel="stylesheet" href="/assets/built/screen.css?v=gMcG1XY9cKLCbUXB">
+
+    <link rel="icon" href="https://ebyhr.github.io/content/images/size/w256h256/format/png/2026/09/carrot-svgrepo-com-3.svg" type="image/png">
+    <link rel="canonical" href="https://ebyhr.github.io/2024-trino-contribution/">
+    <link rel="alternate" type="text/markdown" href="https://ebyhr.github.io/2024-trino-contribution.md">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <meta property="og:site_name" content="@ebyhr">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="2024年のTrinoへのコントリビュートまとめ">
+    <meta property="og:description" content="2024年にTrinoにコントリビュートした記録をまとめてみました。バグの修正などは除外して、ユーザーに関わる機能にしぼっています。
+
+Delta Lakeコネクタはdelta-kernelを利用せずにトランザクションログやチェックポイントのパースを始め、読み書きを自前で実装していることもあり、ここ2年は作業量が多かったのですが、Delta側がTable Featuresを導入してからはreaderとwriterのバージョンがあがらなくなり、落ち着いてきました。プロトコルやRFCも以前ほど頻繁には変更されていない印象を受けます。
+
+そういった背景もあり、Delta LakeのVariant型の対応がまだ進行中ですが、先月からは基本的にIcebergのみに完全に注力していくことになりました。現在はIcebergコネクタをWAP（Write-Audit-Publish）パターンを実現できるようにシンタックスの追加を進めています。あとはV3スペックについても対応中です。
+
+
+Iceberg
+
+ * add_filesおよびadd_files_from_tableプロシージャの追加 #2275">
+    <meta property="og:url" content="https://ebyhr.github.io/2024-trino-contribution/">
+    <meta property="og:image" content="https://ebyhr.github.io/content/images/2026/09/carrot-svgrepo-com-2.svg">
+    <meta property="article:published_time" content="2024-12-31T00:00:00.000Z">
+    <meta property="article:modified_time" content="2026-09-06T00:18:05.000Z">
+    <meta property="article:tag" content="Trino">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="2024年のTrinoへのコントリビュートまとめ">
+    <meta name="twitter:description" content="2024年にTrinoにコントリビュートした記録をまとめてみました。バグの修正などは除外して、ユーザーに関わる機能にしぼっています。
+
+Delta Lakeコネクタはdelta-kernelを利用せずにトランザクションログやチェックポイントのパースを始め、読み書きを自前で実装していることもあり、ここ2年は作業量が多かったのですが、Delta側がTable Featuresを導入してからはreaderとwriterのバージョンがあがらなくなり、落ち着いてきました。プロトコルやRFCも以前ほど頻繁には変更されていない印象を受けます。
+
+そういった背景もあり、Delta LakeのVariant型の対応がまだ進行中ですが、先月からは基本的にIcebergのみに完全に注力していくことになりました。現在はIcebergコネクタをWAP（Write-Audit-Publish）パターンを実現できるようにシンタックスの追加を進めています。あとはV3スペックについても対応中です。
+
+
+Iceberg
+
+ * add_filesおよびadd_files_from_tableプロシージャの追加 #2275">
+    <meta name="twitter:url" content="https://ebyhr.github.io/2024-trino-contribution/">
+    <meta name="twitter:image" content="https://ebyhr.github.io/content/images/2026/09/carrot-svgrepo-com-1.svg">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Yuya Ebihara">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Trino">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "@ebyhr",
+        "url": "https://ebyhr.github.io/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://ebyhr.github.io/content/images/2026/09/profile-circle.png",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Yuya Ebihara",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://www.gravatar.com/avatar/9e70e92bd9747b0f7c4dc907f5709ee2?s=250&r=x&d=mp",
+            "width": 250,
+            "height": 250
+        },
+        "url": "https://ebyhr.github.io/author/ebyhr/",
+        "sameAs": [
+            "https://www.linkedin.com/in/ebyhr"
+        ]
+    },
+    "headline": "2024年のTrinoへのコントリビュートまとめ",
+    "url": "https://ebyhr.github.io/2024-trino-contribution/",
+    "datePublished": "2024-12-31T00:00:00.000Z",
+    "dateModified": "2026-09-06T00:18:05.000Z",
+    "keywords": "Trino",
+    "description": "2024年にTrinoにコントリビュートした記録をまとめてみました。バグの修正などは除外して、ユーザーに関わる機能にしぼっています。\n\nDelta Lakeコネクタはdelta-kernelを利用せずにトランザクションログやチェックポイントのパースを始め、読み書きを自前で実装していることもあり、ここ2年は作業量が多かったのですが、Delta側がTable Featuresを導入してからはreaderとwriterのバージョンがあがらなくなり、落ち着いてきました。プロトコルやRFCも以前ほど頻繁には変更されていない印象を受けます。\n\nそういった背景もあり、Delta LakeのVariant型の対応がまだ進行中ですが、先月からは基本的にIcebergのみに完全に注力していくことになりました。現在はIcebergコネクタをWAP（Write-Audit-Publish）パターンを実現できるようにシンタックスの追加を進めています。あとはV3スペックについても対応中です。\n\n\nIceberg\n\n * add_filesおよびadd_files_from_tableプロシージャの追加 #2275",
+    "mainEntityOfPage": "https://ebyhr.github.io/2024-trino-contribution/"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 6.61">
+    <link rel="alternate" type="application/rss+xml" title="@ebyhr" href="https://ebyhr.github.io/rss/">
+    
+    <link rel="stylesheet" href="/_pagefind/pagefind-ui.css"><script src="/_pagefind/pagefind-ui.js"></script>
+    
+    <link href="https://ebyhr.github.io/webmentions/receive/" rel="webmention">
+    <script defer src="/public/cards.min.js?v=ShRHxgy4po8zN-Wf"></script><style>:root {--ghost-accent-color: #1a4cff;}</style>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=WwnU9jw5ancNC8Gc">
+</head>
+
+<body class='post-template tag-trino is-head-middle-logo'>
+<div class="site">
+
+    <header id="gh-head" class="gh-head gh-outer">
+        <div class="gh-head-inner gh-inner">
+            <div class="gh-head-brand">
+                <div class="gh-head-brand-wrapper">
+                    <a class="gh-head-logo" href="https://ebyhr.github.io">
+                            <img src="https://ebyhr.github.io/content/images/2026/09/profile-circle.png" alt="@ebyhr">
+                    </a>
+                </div>
+                <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+                <button class="gh-burger" aria-label="Toggle menu"></button>
+            </div>
+
+            <nav class="gh-head-menu">
+                <ul class="nav">
+    <li class="nav-home"><a href="https://ebyhr.github.io/">Home</a></li>
+</ul>
+
+            </nav>
+
+            <div class="gh-head-actions">
+                        <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="site-content">
+        
+<main class="site-main">
+
+        <article class="single post tag-trino no-image">
+
+        <header class="single-header gh-canvas">
+            <div class="single-meta">
+                <span class="single-meta-item single-meta-date">
+                    <time datetime="2024-12-31">
+                        31 12月 2024
+                    </time>
+                </span>
+                    <span class="single-meta-item single-meta-length">
+                        1 min read
+                    </span>
+                    <span class="single-meta-item single-meta-tag">
+                        <a class="post-tag post-tag-trino" href="/tag/trino/">
+                            Trino
+                        </a>
+                    </span>
+            </div>
+
+            <h1 class="single-title">2024年のTrinoへのコントリビュートまとめ</h1>
+
+
+            <div class="gh-meta-share">
+                <a href="#/share" class="gh-button-share">Share <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-forward-icon lucide-forward"><path d="m15 17 5-5-5-5"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/></svg></a>
+            </div>
+
+        </header>
+
+    <div class="single-content gh-content gh-canvas">
+        <p>2024年にTrinoにコントリビュートした記録をまとめてみました。バグの修正などは除外して、ユーザーに関わる機能にしぼっています。</p><p>Delta Lakeコネクタはdelta-kernelを利用せずにトランザクションログやチェックポイントのパースを始め、読み書きを自前で実装していることもあり、ここ2年は作業量が多かったのですが、Delta側が<a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md#table-features">Table Features</a>を導入してからはreaderとwriterのバージョンがあがらなくなり、落ち着いてきました。<a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md">プロトコル</a>や<a href="https://github.com/delta-io/delta/tree/master/protocol_rfcs">RFC</a>も以前ほど頻繁には変更されていない印象を受けます。</p><p>そういった背景もあり、Delta Lakeの<a href="https://github.com/delta-io/delta/blob/master/protocol_rfcs/variant-type.md">Variant型</a>の対応がまだ進行中ですが、先月からは基本的にIcebergのみに完全に注力していくことになりました。現在はIcebergコネクタをWAP（Write-Audit-Publish）パターンを実現できるようにシンタックスの追加を進めています。あとは<a href="https://iceberg.apache.org/spec/#version-3-extended-types-and-capabilities">V3スペック</a>についても対応中です。</p><h2 id="iceberg">Iceberg</h2><ul><li><code>add_files</code>および<code>add_files_from_table</code>プロシージャの追加 <a href="https://github.com/trinodb/trino/pull/22751">#22751</a><ul><li>Sparkのプロシージャと基本的には同じように動作しますが、1つ違いを挙げるとスキーマのバリデーションを追加しています。Sparkでは<code>NOT NULL</code>カラムに対しても<code>NULL</code>が入ったファイルを追加できるのですが、Trino側ではエラーを投げるようにしています。</li></ul></li><li><code>$all_manifests</code>メタデータテーブルの追加 <a href="https://github.com/trinodb/trino/pull/24330">#24330</a></li><li><code>$all_entries</code>メタデータテーブルの追加 <a href="https://github.com/trinodb/trino/pull/24543">#24543</a></li><li><code>$entries</code>メタデータテーブルの追加 <a href="https://github.com/trinodb/trino/pull/24172">#24172</a></li><li><code>ALTER COLUMN ... DROP NOT NULL</code>ステートメントのサポート <a href="https://github.com/trinodb/trino/issues/20448">#20448</a></li></ul><h2 id="delta-lake">Delta Lake</h2><ul><li>Deletion Vectorの書き込みサポート <a href="https://github.com/trinodb/trino/pull/22102">#22102</a></li><li>タイムトラベルクエリのサポート<a href="https://github.com/trinodb/trino/pull/21052">#21052</a></li><li>メタデータをメタストアにバックグラウンドで保存 <a href="https://github.com/trinodb/trino/pull/21463">#21463</a></li><li>Delta LakeやIcebergでよく問題になるのが <code>information_schema</code>等からカラム情報をリストするのが遅いというものがあります。これは毎回ストレージに対するアクセスが発生するのが原因なのですが、それを回避するためにメタストアのプロパティにカラム情報と最新のトランザクションのバージョンを追加しています。</li><li><a href="https://github.com/delta-io/delta/blob/master/protocol_rfcs/type-widening.md">Type Widening</a>が有効化されているテーブルの読み込みサポート <a href="https://github.com/trinodb/trino/pull/22142">#22142</a></li><li>Iceberg UniFormが有効になったテーブルの読み込みのサポート <a href="https://github.com/trinodb/trino/pull/22311">#22311</a></li><li><code>$transactions</code>メタデータテーブルの追加 <a href="https://github.com/trinodb/trino/pull/24292">#24292</a></li><li><a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md#v2-spec">V2チェックポイント</a> が有効化されているテーブルの読み込みのサポート <a href="https://github.com/trinodb/trino/issues/19345">#19345</a></li><li><code>ALTER COLUMN ... DROP NOT NULL</code> ステートメントのサポート. <a href="https://github.com/trinodb/trino/issues/20448">#20448</a></li></ul><h2 id="%E3%81%9D%E3%81%AE%E4%BB%96">その他</h2><ul><li>JDBC系のコネクタに <code>execute</code>プロシージャを追加 <a href="https://github.com/trinodb/trino/pull/22556">#22556</a><ul><li><code>query</code>テーブル関数では主にSELECT系のクエリをサポートしていますが、DDLやDMLをデータソース側で実行できるように新しく<code>execute</code>プロシージャを追加しました。</li></ul></li><li>Vector関連の機能追加<ul><li>類似性の検索機能に関するリクエストがお客さまから挙がっていたので、エンジンに関数を追加しつつPostgreSQLコネクタを改善していました。<ul><li>PostgreSQLコネクタでvector型の読み込みをサポート <a href="https://github.com/trinodb/trino/pull/22630">#22630</a><ul><li><code>euclidean_distance</code>、<code>dot_product</code>、<code>cosine_distance</code> 関数をエンジンに追加 <a href="https://github.com/trinodb/trino/pull/22397">#22397</a></li></ul></li></ul></li></ul></li></ul><p><code>euclidean_distance</code>、<code>-dot_product</code>、 <code>cosine_distance</code> 関数をpgvectorへプッシュダウン <a href="https://github.com/trinodb/trino/pull/22618">#22618</a> <a href="https://github.com/trinodb/trino/pull/23015">#23015</a>。pgvectorの表現に合わせて以下のようなルールで生成するSQLを内部的に書き換えながらプッシュダウンをしています。</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Trino</th>
+<th>pgvector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>euclidean_distance</td>
+<td>&lt;-&gt;</td>
+</tr>
+<tr>
+<td>cosine_distance</td>
+<td>&lt;=&gt;</td>
+</tr>
+<tr>
+<td>-dot_product</td>
+<td>&lt;#&gt;</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+
+    </div>
+
+    <div class="gh-canvas">
+    <footer class="single-footer">
+
+        <div class="single-footer-left">
+        </div>
+
+        <div class="single-footer-middle">
+            <div class="single-footer-top">
+                <h3 class="single-footer-title">Published by:</h3>
+                <div class="author-list">
+                    <div class="author-image-placeholder u-placeholder square">
+                        <a href="/author/ebyhr/" title="Yuya Ebihara">
+                            <img class="author-image u-object-fit" src="https://www.gravatar.com/avatar/9e70e92bd9747b0f7c4dc907f5709ee2?s&#x3D;250&amp;r&#x3D;x&amp;d&#x3D;mp" alt="Yuya Ebihara" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="single-footer-right">
+            <div class="navigation navigation-next">
+                <a class="navigation-link" href="/puffin-file-format/" aria-label="Next post">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" class="icon navigation-icon">
+    <path d="M5.333 14.667v2.667h16L14 24.667l1.893 1.893L26.453 16 15.893 5.44 14 7.333l7.333 7.333h-16z"></path>
+</svg>                </a>
+            </div>
+        </div>
+
+    </footer>
+    </div>
+
+</article>
+        
+        
+</main>
+    </div>
+
+    <footer class="gh-foot gh-outer">
+        <div class="gh-foot-inner gh-inner">
+            <div class="gh-copyright">
+                @ebyhr © 2026
+            </div>
+            <div class="gh-foot-center">
+                <div class="gh-social-links">
+                </div>
+                    <nav class="gh-foot-menu">
+                        <ul class="nav">
+    <li class="nav-sign-up"><a href="#/portal/">Sign up</a></li>
+</ul>
+
+                    </nav>
+            </div>
+            <div class="gh-powered-by">
+                Powered by <a href="https://ghost.org/" target="_blank" rel="noopener">Ghost</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous">
+</script>
+<script src='/assets/built/main.min.js?v=MnUi_nSHTqOuRwY8'></script>
+
+
+
+<div id="pagefind-ui-container" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--background-color, #fff);overflow:auto;padding:2rem"></div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var container = document.getElementById("pagefind-ui-container");
+  if (!container || typeof PagefindUI === "undefined") { return; }
+  new PagefindUI({ element: container, showSubResults: true });
+  document.querySelectorAll("[data-ghost-search]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      container.style.display = "block";
+      var input = container.querySelector("input");
+      if (input) { input.focus(); }
+    });
+  });
+  container.addEventListener("click", function (e) {
+    if (e.target === container) { container.style.display = "none"; }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { container.style.display = "none"; }
+  });
+});
+</script>
+</body>
+</html>

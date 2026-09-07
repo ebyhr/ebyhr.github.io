@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>404 — Page not found</title>
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <link rel="stylesheet" href="/public/ghost.css?v=0KOLxTCwfubWh13w"/>
+
+  </head>
+  <body>
+    <main role="main" id="main">
+      <div class="gh-app">
+          <div class="gh-viewport">
+              <div class="gh-view">
+                <section class="error-content error-404 js-error-container">
+                  <section class="error-details">
+                    <section class="error-message">
+                      <h1 class="error-code">404</h1>
+                      <h2 class="error-description">Page not found</h2>
+                      <a class="error-link" href="https://ebyhr.github.io">Go to the front page →</a>
+                    </section>
+                  </section>
+                </section>
+
+              </div>
+          </div>
+      </div>
+    </main>
+  <div id="pagefind-ui-container" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--background-color, #fff);overflow:auto;padding:2rem"></div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var container = document.getElementById("pagefind-ui-container");
+  if (!container || typeof PagefindUI === "undefined") { return; }
+  new PagefindUI({ element: container, showSubResults: true });
+  document.querySelectorAll("[data-ghost-search]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      container.style.display = "block";
+      var input = container.querySelector("input");
+      if (input) { input.focus(); }
+    });
+  });
+  container.addEventListener("click", function (e) {
+    if (e.target === container) { container.style.display = "none"; }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { container.style.display = "none"; }
+  });
+});
+</script>
+</body>
+</html>

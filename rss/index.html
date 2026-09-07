@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[@ebyhr]]></title><description><![CDATA[Thoughts, stories and ideas.]]></description><link>https://ebyhr.github.io/</link><image><url>https://ebyhr.github.io/favicon.png</url><title>@ebyhr</title><link>https://ebyhr.github.io/</link></image><generator>Ghost 6.61</generator><lastBuildDate>Sun, 06 Sep 2026 00:18:13 GMT</lastBuildDate><atom:link href="https://ebyhr.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Puffinファイルフォーマット]]></title><description><![CDATA[<p>Iceberg&#x3067;&#x7D71;&#x8A08;&#x60C5;&#x5831;&#x3084;Deletion Vector&#x306B;&#x5229;&#x7528;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;<a href="https://iceberg.apache.org/puffin-spec/">Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;</a>&#x306B;&#x95A2;&#x3059;&#x308B;&#x89E3;&#x8AAC;&#x3067;&#x3059;&#x3002;<br>Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;&#x306F;&#x4EFB;</p>]]></description><link>https://ebyhr.github.io/puffin-file-format/</link><guid isPermaLink="false">6a967645c295ea24952a4550</guid><category><![CDATA[Iceberg]]></category><dc:creator><![CDATA[Yuya Ebihara]]></dc:creator><pubDate>Sat, 13 Sep 2025 00:00:00 GMT</pubDate><content:encoded><![CDATA[<p>Iceberg&#x3067;&#x7D71;&#x8A08;&#x60C5;&#x5831;&#x3084;Deletion Vector&#x306B;&#x5229;&#x7528;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;<a href="https://iceberg.apache.org/puffin-spec/">Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;</a>&#x306B;&#x95A2;&#x3059;&#x308B;&#x89E3;&#x8AAC;&#x3067;&#x3059;&#x3002;<br>Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;&#x306F;&#x4EFB;&#x610F;&#x306E;Blob&#x3092;&#x4FDD;&#x5B58;&#x3067;&#x304D;&#x308B;&#x3088;&#x3046;&#x306B;&#x8A2D;&#x8A08;&#x3055;&#x308C;&#x3066;&#x304A;&#x308A;&#x3001;&#x5C06;&#x6765;&#x7684;&#x306B;&#x69D8;&#x3005;&#x306A;&#x7528;&#x9014;&#x306B;&#x4F7F;&#x3048;&#x308B;&#x3088;&#x3046;&#x306B;&#x306A;&#x3063;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p><p>&#x524D;&#x534A;&#x3067;&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;&#x306E;&#x5185;&#x5BB9;&#x306B;&#x3064;&#x3044;&#x3066;&#x3001;&#x5F8C;&#x534A;&#x306B;&#x4E2D;&#x8EAB;&#x3092;&#x78BA;&#x8A8D;&#x3067;&#x304D;&#x308B;&#x30C4;&#x30FC;&#x30EB;&#x306E;&#x7D39;&#x4ECB;&#x3092;&#x3057;&#x307E;&#x3059;&#x3002;</p><h2 id="file-structure">File structure</h2>
+<p>Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x4EE5;&#x4E0B;&#x306E;&#x3088;&#x3046;&#x306B;&#x3001;Magic&#x30D0;&#x30A4;&#x30C8;&#x3001;Blob&#x1D62;&#x3001;Footer&#x3068;&#x3044;&#x3046;3&#x3064;&#x306E;&#x90E8;&#x5206;&#x304B;&#x3089;&#x69CB;&#x6210;&#x3055;&#x308C;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th>Magic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blob&#x2081;</td>
+</tr>
+<tr>
+<td>Blob&#x2082;</td>
+</tr>
+<tr>
+<td>...</td>
+</tr>
+<tr>
+<td>Blob&#x1D62;</td>
+</tr>
+<tr>
+<td>Footer</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Magic: &#x5148;&#x982D;&#x306E;Magic&#x90E8;&#x5206;&#x306F;4&#x30D0;&#x30A4;&#x30C8;&#xFF08;0x50, 0x46, 0x41, 0x31&#xFF09;&#x3067;&#x3001;&#x3053;&#x308C;&#x306F;PFA1 (Puffin Fratercula arctica, Version 1)&#x3092;&#x8868;&#x3057;&#x307E;&#x3059;&#x3002;&#x300C;Puffin&#x300D;&#x306F;&#x65E5;&#x672C;&#x8A9E;&#x3067;&#x306F;<a href="https://ja.wikipedia.org/wiki/%E3%83%8B%E3%82%B7%E3%83%84%E3%83%8E%E3%83%A1%E3%83%89%E3%83%AA">&#x30CB;&#x30B7;&#x30C4;&#x30CE;&#x30E1;&#x30C9;&#x30EA;</a>&#x3092;&#x8868;&#x3057;&#x307E;&#x3059;&#x3002;&#x300C;Fratercula arctica&#x300D;&#x306F;&#x3053;&#x306E;&#x9CE5;&#x306E;&#x5B66;&#x540D;&#x3067;&#x3059;&#x3002;</li>
+<li>Blob&#x1D62;: &#x3053;&#x306E;&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x306B;&#x542B;&#x307E;&#x308C;&#x3066;&#x3044;&#x308B;Blob&#x306E;&#x96C6;&#x5408;&#x3067;&#x3059;&#x3002;Footer&#x306B;&#x3057;&#x305F;&#x304C;&#x3063;&#x3066;&#x30A2;&#x30D7;&#x30EA;&#x30B1;&#x30FC;&#x30B7;&#x30E7;&#x30F3;&#x5074;&#x3067;&#x51E6;&#x7406;&#x3092;&#x884C;&#x3044;&#x307E;&#x3059;&#x3002;</li>
+<li>Footer: &#x4EE5;&#x4E0B;&#x306E;&#x5185;&#x5BB9;&#x3067;&#x69CB;&#x6210;&#x3055;&#x308C;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</li>
+</ul>
+<h2 id="footer-structure">Footer structure</h2>
+<table>
+<thead>
+<tr>
+<th>Magic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FooterPayload</td>
+</tr>
+<tr>
+<td>FooterPayloadSize</td>
+</tr>
+<tr>
+<td>Flags</td>
+</tr>
+<tr>
+<td>Magic</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Magic: &#x524D;&#x8FF0;&#x306E;&#x5148;&#x982D;&#x3068;&#x540C;&#x3058;4&#x30D0;&#x30A4;&#x30C8;&#x3067;&#x3059;&#x3002;</li>
+<li>FooterPayload: &#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x5185;&#x306E;Blob&#x3092;&#x8A18;&#x8FF0;&#x3059;&#x308B;JSON&#x30AA;&#x30D6;&#x30B8;&#x30A7;&#x30AF;&#x30C8;&#x3067;&#x3001;&#x8A73;&#x3057;&#x304F;&#x306F;&#x5F8C;&#x8FF0;&#x3057;&#x307E;&#x3059;&#x3002;&#x5FC5;&#x8981;&#x306B;&#x5FDC;&#x3058;&#x3066;&#x5727;&#x7E2E;&#x3059;&#x308B;&#x3053;&#x3068;&#x3082;&#x3067;&#x304D;&#x307E;&#x3059;&#x3002;</li>
+<li>FooterPayloadSize: FooterPayload&#x306E;&#x30D0;&#x30A4;&#x30C8;&#x30B5;&#x30A4;&#x30BA;&#x3092;&#x4FDD;&#x6301;&#x3057;&#x307E;&#x3059;&#x3002;&#x5727;&#x7E2E;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x5834;&#x5408;&#x306F;&#x5727;&#x7E2E;&#x5F8C;&#x306E;&#x30B5;&#x30A4;&#x30BA;&#x3067;&#x3059;&#x3002;</li>
+<li>Flags: &#x771F;&#x507D;&#x5024;&#x30D5;&#x30E9;&#x30B0;&#x3092;&#x683C;&#x7D0D;&#x3059;&#x308B;&#x305F;&#x3081;&#x306E;4&#x30D0;&#x30A4;&#x30C8;&#x3067;&#x3059;&#x3002;
+<ul>
+<li>byte 0 (first): &#x6700;&#x4E0B;&#x4F4D;&#x306E;&#x30D3;&#x30C3;&#x30C8;&#x306F;&#x3001;FooterPayload&#x304C;&#x5727;&#x7E2E;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x304B;&#x5426;&#x304B;&#x3092;&#x793A;&#x3057;&#x307E;&#x3059;&#x3002;</li>
+<li>&#x6B8B;&#x308A;&#x306E;&#x30D3;&#x30C3;&#x30C8;&#x306F;&#x5C06;&#x6765;&#x306E;&#x5229;&#x7528;&#x306E;&#x305F;&#x3081;&#x306B;&#x4E88;&#x7D04;&#x3055;&#x308C;&#x3066;&#x304A;&#x308A;&#x3001;&#x66F8;&#x304D;&#x8FBC;&#x3080;&#x969B;&#x306B;&#x306F;0&#x306B;&#x8A2D;&#x5B9A;&#x3057;&#x3066;&#x304A;&#x304F;&#x5FC5;&#x8981;&#x304C;&#x3042;&#x308A;&#x307E;&#x3059;&#x3002;</li>
+</ul>
+</li>
+</ul>
+<h2 id="footerpayload">FooterPayload</h2>
+<p>FooterPayload&#x306E;&#x30D0;&#x30A4;&#x30C8;&#x5217;&#x306F;&#x3001;JSON&#x5F62;&#x5F0F;&#x3067;1&#x3064;&#x306E;FileMetadata&#x30AA;&#x30D6;&#x30B8;&#x30A7;&#x30AF;&#x30C8;&#x3092;&#x8868;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p>
+<h3 id="filemetadata">FileMetadata</h3>
+<table>
+<thead>
+<tr>
+<th>&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x540D;</th>
+<th>&#x578B;</th>
+<th>&#x5FC5;&#x9808;</th>
+<th>&#x8AAC;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blobs</td>
+<td>BlobMetadata&#x306E;&#x30EA;&#x30B9;&#x30C8;</td>
+<td>Yes</td>
+<td>&#x6B21;&#x306E;BlobMetadata&#x3067;&#x89E3;&#x8AAC;&#x3057;&#x307E;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>properties</td>
+<td>&#x30D7;&#x30ED;&#x30D1;&#x30C6;&#x30A3;&#x306E;&#x5024;&#x304C;&#x3059;&#x3079;&#x3066;&#x6587;&#x5B57;&#x5217;&#x3067;&#x3042;&#x308B;JSON&#x30AA;&#x30D6;&#x30B8;&#x30A7;&#x30AF;&#x30C8;</td>
+<td>No</td>
+<td>&#x4EFB;&#x610F;&#x306E;&#x30E1;&#x30BF;&#x60C5;&#x5831;&#x3092;&#x683C;&#x7D0D;&#x3059;&#x308B;&#x305F;&#x3081;&#x306E;&#x9818;&#x57DF;&#x3067;&#x3059;&#x3002;<code>created-by</code>&#x306B;&#x30AF;&#x30A8;&#x30EA;&#x30A8;&#x30F3;&#x30B8;&#x30F3;&#x306E;&#x540D;&#x524D;&#x3084;&#x30D0;&#x30FC;&#x30B8;&#x30E7;&#x30F3;&#x306A;&#x3069;&#x3092;&#x66F8;&#x304D;&#x8FBC;&#x3080;&#x3053;&#x3068;&#x304C;&#x63A8;&#x5968;&#x3055;&#x308C;&#x3066;&#x3044;&#x307E;&#x3059;&#xFF08;&#x4F8B;&#xFF1A;<code>Trino version 476</code>&#xFF09;&#x3002;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="blobmetadata">BlobMetadata</h3>
+<table>
+<thead>
+<tr>
+<th>&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x540D;</th>
+<th>&#x578B;</th>
+<th>&#x5FC5;&#x9808;</th>
+<th>&#x8AAC;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>JSON string</td>
+<td>Yes</td>
+<td></td>
+</tr>
+<tr>
+<td>fields</td>
+<td>JSON int</td>
+<td>Yes</td>
+<td>Theta&#x30B9;&#x30B1;&#x30C3;&#x30C1;&#x3067;&#x3042;&#x308C;&#x3070;&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x540D;&#x3001;Deletion Vector&#x3067;&#x3042;&#x308C;&#x3070;_pos&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x3092;&#x8868;&#x3059;2147483645&#x304C;&#x5165;&#x308A;&#x307E;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>snapshot-id</td>
+<td>JSON long</td>
+<td>Yes</td>
+<td>Blob&#x304C;&#x8A08;&#x7B97;&#x3055;&#x308C;&#x305F;Iceberg&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x30B9;&#x30CA;&#x30C3;&#x30D7;&#x30B7;&#x30E7;&#x30C3;&#x30C8;&#x306E;ID&#x3092;&#x8868;&#x3057;&#x307E;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>sequence-number</td>
+<td>JSON long</td>
+<td>Yes</td>
+<td>Blob&#x304C;&#x8A08;&#x7B97;&#x3055;&#x308C;&#x305F;Iceberg&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x30B7;&#x30FC;&#x30B1;&#x30F3;&#x30B9;&#x30CA;&#x30F3;&#x30D0;&#x30FC;&#x3092;&#x8868;&#x3057;&#x307E;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>offset</td>
+<td>JSON long</td>
+<td>Yes</td>
+<td>&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x5185;&#x3067;Blob&#x306E;&#x5185;&#x5BB9;&#x304C;&#x59CB;&#x307E;&#x308B;&#x4F4D;&#x7F6E;&#xFF08;&#x30AA;&#x30D5;&#x30BB;&#x30C3;&#x30C8;&#xFF09;&#x3067;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>length</td>
+<td>JSON long</td>
+<td>Yes</td>
+<td>&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x5185;&#x306B;&#x683C;&#x7D0D;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;Blob&#x306E;&#x30B5;&#x30A4;&#x30BA;&#xFF08;&#x5727;&#x7E2E;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x5834;&#x5408;&#x306F;&#x5727;&#x7E2E;&#x5F8C;&#x306E;&#x30B5;&#x30A4;&#x30BA;&#xFF09;&#x3067;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>compression-codec</td>
+<td>JSON long</td>
+<td>No</td>
+<td>&#x5727;&#x7E2E;&#x65B9;&#x5F0F;&#x3092;&#x683C;&#x7D0D;&#x3057;&#x307E;&#x3059;&#x3002;lz4&#x3001;zstd&#x304C;&#x30B5;&#x30DD;&#x30FC;&#x30C8;&#x3055;&#x308C;&#x3066;&#x304A;&#x308A;&#x3001;&#x7701;&#x7565;&#x3055;&#x308C;&#x305F;&#x5834;&#x5408;&#x306F;&#x5727;&#x7E2E;&#x3055;&#x308C;&#x3066;&#x3044;&#x306A;&#x3044;&#x3053;&#x3068;&#x3092;&#x8868;&#x3057;&#x307E;&#x3059;&#x3002;</td>
+</tr>
+<tr>
+<td>properties</td>
+<td>&#x30D7;&#x30ED;&#x30D1;&#x30C6;&#x30A3;&#x306E;&#x5024;&#x304C;&#x3059;&#x3079;&#x3066;&#x6587;&#x5B57;&#x5217;&#x3067;&#x3042;&#x308B;JSON&#x30AA;&#x30D6;&#x30B8;&#x30A7;&#x30AF;&#x30C8;</td>
+<td>No</td>
+<td>Blob&#x306B;&#x95A2;&#x3059;&#x308B;&#x4EFB;&#x610F;&#x306E;&#x30E1;&#x30BF;&#x60C5;&#x5831;&#x3092;&#x683C;&#x7D0D;&#x3059;&#x308B;&#x9818;&#x57DF;&#x3067;&#x3059;&#x3002;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="blob-types">Blob types</h2>
+<p>&#x73FE;&#x5728;&#x3001;Iceberg&#x3067;&#x306F;2&#x7A2E;&#x985E;&#x306E;Blob&#x3092;&#x30B5;&#x30DD;&#x30FC;&#x30C8;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p>
+<h3 id="apache-datasketches-theta-v1">apache-datasketches-theta-v1</h3>
+<p>1&#x3064;&#x76EE;&#x306F;NDV (Number of Distinct Values)&#x3092;<a href="https://datasketches.apache.org/docs/Theta/ThetaSketches.html">Theta sketch</a><br>
+&#x30D5;&#x30A9;&#x30FC;&#x30DE;&#x30C3;&#x30C8;&#x3067;&#x4FDD;&#x5B58;&#x3059;&#x308B;<code>apache-datasketches-theta-v1</code>&#x3067;&#x3059;&#x3002;</p>
+<p>properties&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x306B;ndv&#x3068;&#x3044;&#x3046;&#x30AD;&#x30FC;&#x3067;&#x5024;&#x304C;&#x4FDD;&#x5B58;&#x3055;&#x308C;&#x307E;&#x3059;&#x3002;</p>
+<h3 id="deletion-vector-v1">deletion-vector-v1</h3>
+<p>2&#x3064;&#x76EE;&#x306F;Iceberg v3&#x3067;&#x8FFD;&#x52A0;&#x3055;&#x308C;&#x305F;<a href="https://iceberg.apache.org/spec/#deletion-vectors">Deletion Vector</a>&#x3092;&#x4FDD;&#x5B58;&#x3059;&#x308B;&#x305F;&#x3081;&#x306E;<code>deletion-vector-v1</code>&#x3067;&#x3059;&#x3002;<br>
+NDV&#x3068;&#x306F;&#x9055;&#x3044;&#x3001;properties&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x3067;&#x306F;&#x306A;&#x304F;Blob&#x306B;<a href="https://roaringbitmap.org/">Roaring Bitmap</a>&#x304C;&#x683C;&#x7D0D;&#x3055;&#x308C;&#x307E;&#x3059;&#x3002;</p>
+<hr>
+<h2 id="puffin-tools">puffin-tools</h2>
+<p>Iceberg&#x95A2;&#x9023;&#x306E;&#x958B;&#x767A;&#x3092;&#x3057;&#x3066;&#x3044;&#x308B;&#x3068;&#x3001;&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x3084;&#x30C7;&#x30FC;&#x30BF;&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x306E;&#x4E2D;&#x8EAB;&#x3092;&#x76F4;&#x63A5;&#x78BA;&#x8A8D;&#x3057;&#x305F;&#x304F;&#x306A;&#x308B;&#x3053;&#x3068;&#x304C;&#x3042;&#x308A;&#x307E;&#x3059;&#x3002;<br>
+Parquet&#x3001;ORC&#x3001;Avro&#x306A;&#x3069;&#x306E;&#x30C4;&#x30FC;&#x30EB;&#x306B;&#x306F;&#x305D;&#x308C;&#x305E;&#x308C;<code>parquet-tools</code>&#x3001;<code>orc-tools</code>&#x3001;<code>avro-tools</code>&#x304C;&#x3042;&#x308B;&#x306E;&#x306B;&#x5BFE;&#x3057;&#x3066;&#x3001;<br>
+Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x3092;&#x78BA;&#x8A8D;&#x3059;&#x308B;&#x30C4;&#x30FC;&#x30EB;&#x306F;&#x5B58;&#x5728;&#x3057;&#x307E;&#x305B;&#x3093;&#x3067;&#x3057;&#x305F;&#x3002;</p>
+<p>&#x4EE5;&#x4E0B;&#x306E;&#x3088;&#x3046;&#x306B;xxd&#x30B3;&#x30DE;&#x30F3;&#x30C9;&#x306A;&#x3069;&#x3067;&#x78BA;&#x8A8D;&#x3067;&#x304D;&#x308B;&#x90E8;&#x5206;&#x3082;&#x3042;&#x308A;&#x307E;&#x3059;&#x304C;&#x3001;Blob&#x90E8;&#x5206;&#x3092;&#x76F4;&#x63A5;&#x8AAD;&#x3080;&#x306E;&#x306F;&#x5927;&#x5909;&#x3067;&#x3059;&#x3002;</p>
+<pre><code>00000000: 5046 4131 0000 0026 d1d3 3964 0100 0000  PFA1...&amp;..9d....
+00000010: 0000 0000 0000 0000 3a30 0000 0100 0000  ........:0......
+00000020: 0000 0200 1000 0000 0000 0200 0400 3065  ..............0e
+00000030: d8b8 5046 4131 7b22 626c 6f62 7322 3a5b  ..PFA1{&quot;blobs&quot;:[
+00000040: 7b22 7479 7065 223a 2264 656c 6574 696f  {&quot;type&quot;:&quot;deletio
+00000050: 6e2d 7665 6374 6f72 2d76 3122 2c22 6669  n-vector-v1&quot;,&quot;fi
+00000060: 656c 6473 223a 5b32 3134 3734 3833 3634  elds&quot;:[214748364
+00000070: 355d 2c22 736e 6170 7368 6f74 2d69 6422  5],&quot;snapshot-id&quot;
+00000080: 3a2d 312c 2273 6571 7565 6e63 652d 6e75  :-1,&quot;sequence-nu
+00000090: 6d62 6572 223a 2d31 2c22 6f66 6673 6574  mber&quot;:-1,&quot;offset
+000000a0: 223a 342c 226c 656e 6774 6822 3a34 362c  &quot;:4,&quot;length&quot;:46,
+000000b0: 2270 726f 7065 7274 6965 7322 3a7b 2272  &quot;properties&quot;:{&quot;r
+000000c0: 6566 6572 656e 6365 642d 6461 7461 2d66  eferenced-data-f
+000000d0: 696c 6522 3a22 6669 6c65 3a2f 7661 722f  ile&quot;:&quot;file:/var/
+000000e0: 666f 6c64 6572 732f 3973 2f5f 7a77 6e34  folders/9s/_zwn4
+000000f0: 725f 6e32 5f39 6270 306b 726c 6c70 3170  r_n2_9bp0krllp1p
+00000100: 6c33 6330 3030 3067 702f 542f 6963 6562  l3c0000gp/T/iceb
+00000110: 6572 675f 7175 6572 795f 7275 6e6e 6572  erg_query_runner
+00000120: 3338 3334 3635 3034 3632 3339 3736 3339  3834650462397639
+00000130: 3733 362f 7470 6368 2f72 6567 696f 6e2d  736/tpch/region-
+00000140: 3766 3766 3134 3036 3865 3032 3465 6338  7f7f14068e024ec8
+00000150: 6137 3363 3037 3338 3861 3132 3331 6365  a73c07388a1231ce
+00000160: 2f64 6174 612f 3230 3235 3039 3132 5f31  /data/20250912_1
+00000170: 3132 3732 335f 3030 3032 335f 7836 7776  12723_00023_x6wv
+00000180: 772d 3063 3062 6665 3261 2d38 3434 372d  w-0c0bfe2a-8447-
+00000190: 3465 3463 2d62 3630 612d 6166 3162 3663  4e4c-b60a-af1b6c
+000001a0: 3430 3931 3366 2e70 6172 7175 6574 222c  40913f.parquet&quot;,
+000001b0: 2263 6172 6469 6e61 6c69 7479 223a 2233  &quot;cardinality&quot;:&quot;3
+000001c0: 227d 7d5d 2c22 7072 6f70 6572 7469 6573  &quot;}}],&quot;properties
+000001d0: 223a 7b22 6372 6561 7465 642d 6279 223a  &quot;:{&quot;created-by&quot;:
+000001e0: 2254 7269 6e6f 2076 6572 7369 6f6e 2074  &quot;Trino version t
+000001f0: 6573 7476 6572 7369 6f6e 227d 7dc7 0100  estversion&quot;}}...
+00000200: 0000 0000 0050 4641 31                   .....PFA1
+</code></pre>
+<p>&#x305D;&#x3053;&#x3067;&#x3001;Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x306E;&#x4E2D;&#x8EAB;&#x3092;&#x78BA;&#x8A8D;&#x3067;&#x304D;&#x308B;<a href="https://github.com/ebyhr/puffin-tools">puffin-tools</a>&#x3092;&#x4F5C;&#x6210;&#x3057;&#x307E;&#x3057;&#x305F;&#x3002;<br>
+&#x30B5;&#x30F3;&#x30D7;&#x30EB;&#x306E;Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x3092;<a href="https://github.com/ebyhr/puffin-tools/tree/master/src/test/resources">resources&#x30C7;&#x30A3;&#x30EC;&#x30AF;&#x30C8;&#x30EA;</a>&#x306B;&#x7F6E;&#x3044;&#x3066;&#x3042;&#x308A;&#x307E;&#x3059;&#x3002;</p>
+<p><a href="https://github.com/ebyhr/puffin-tools/releases/tag/0.1">&#x30D0;&#x30FC;&#x30B8;&#x30E7;&#x30F3;0.1</a>&#x306E;&#x30BF;&#x30B0;&#x306B;jar&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x304C;&#x3042;&#x308B;&#x306E;&#x3067;&#x3001;<br>
+&#x30C0;&#x30A6;&#x30F3;&#x30ED;&#x30FC;&#x30C9;&#x3057;&#x3066;&#x5B9F;&#x884C;&#x6A29;&#x9650;&#x3092;&#x8FFD;&#x52A0;&#x3059;&#x308B;&#x3068;&#x3059;&#x3050;&#x306B;&#x5229;&#x7528;&#x3067;&#x304D;&#x307E;&#x3059;&#x3002;</p>
+<pre><code>chmod +x puffin-tools.jar
+</code></pre>
+<p>&#x30B5;&#x30DD;&#x30FC;&#x30C8;&#x3057;&#x3066;&#x3044;&#x308B;&#x5F15;&#x6570;&#x306F;<code>--path</code>&#x306E;&#x307F;&#x3067;&#x3001;&#x7D76;&#x5BFE;&#x30D1;&#x30B9;&#x304B;&#x76F8;&#x5BFE;&#x30D1;&#x30B9;&#x3067;Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x3092;&#x6307;&#x5B9A;&#x3057;&#x307E;&#x3059;&#x3002;<br>
+&#x5B9F;&#x884C;&#x3059;&#x308B;&#x3068;&#x3001;&#x307E;&#x305A;properties&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x304C;JSON&#x5F62;&#x5F0F;&#x3067;&#x51FA;&#x529B;&#x3055;&#x308C;&#x3001;&#x7D9A;&#x3044;&#x3066;Blob&#x3054;&#x3068;&#x306B;&#x5185;&#x5BB9;&#x304C;&#x51FA;&#x529B;&#x3055;&#x308C;&#x307E;&#x3059;&#x3002;</p>
+<p>Theta Sketch&#x3067;&#x3042;&#x308C;&#x3070;ndv&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x304C;&#x6700;&#x5F8C;&#x306B;&#x51FA;&#x529B;&#x3055;&#x308C;&#x307E;&#x3059;&#x3002;<br>
+&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x30AB;&#x30E9;&#x30E0;&#x540D;&#x3067;&#x306F;&#x306A;&#x304F;&#x3001;&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;ID&#x3067;&#x4FDD;&#x5B58;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x70B9;&#x306B;&#x6CE8;&#x610F;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;&#x3002;<br>
+Puffin&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x5185;&#x306B;&#x306F;&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;ID&#x3057;&#x304B;&#x4FDD;&#x5B58;&#x3055;&#x308C;&#x3066;&#x3044;&#x306A;&#x3044;&#x305F;&#x3081;&#x3001;&#x30D5;&#x30A3;&#x30FC;&#x30EB;&#x30C9;&#x540D;&#x3092;&#x8868;&#x793A;&#x3059;&#x308B;&#x306B;&#x306F;Iceberg&#x306E;<br>
+&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x3092;&#x5225;&#x9014;&#x53C2;&#x7167;&#x3059;&#x308B;&#x5FC5;&#x8981;&#x304C;&#x3042;&#x308A;&#x307E;&#x3059;&#x3002;</p>
+<pre><code class="language-sh">./puffin-tools.jar --path apache-datasketches-theta-v1.puffin
+
+=== properties ===
+{created-by=Trino version testversion}
+
+=== blob ===
+type: apache-datasketches-theta-v1
+inputFields: [1]
+snapshotId: 3906904963261072048
+sequenceNumber: 1
+offset: 4
+length: 69
+compressionCodec: zstd
+properties: {ndv=5}
+ndv: 5
+...
+</code></pre>
+<p>Deletion Vector&#x3067;&#x3042;&#x308C;&#x3070;&#x4E00;&#x756A;&#x6700;&#x5F8C;&#x306B;&#x524A;&#x9664;&#x3055;&#x308C;&#x305F;&#x884C;&#x306E;&#x4F4D;&#x7F6E;&#x3092;&#x793A;&#x3059;&#x60C5;&#x5831;&#x304C;&#x51FA;&#x529B;&#x3055;&#x308C;&#x307E;&#x3059;&#x3002;</p>
+<pre><code class="language-sh">./puffin-tools.jar --path deletion-vector-v1.puffin
+
+=== properties ===
+{created-by=Trino version testversion}
+
+=== blob ===
+type: deletion-vector-v1
+inputFields: [2147483645]
+snapshotId: -1
+sequenceNumber: -1
+offset: 4
+length: 46
+compressionCodec: null
+properties: {referenced-data-file=file:/var/folders/9s/_zwn4r_n2_9bp0krllp1pl3c0000gp/T/iceberg_query_runner3834650462397639736/tpch/region-7f7f14068e024ec8a73c07388a1231ce/data/20250912_112723_00023_x6wvw-0c0bfe2a-8447-4e4c-b60a-af1b6c40913f.parquet, cardinality=3}
+deletedRows: [0, 2, 4]
+</code></pre>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://iceberg.apache.org/puffin-spec/#file-structure">https://iceberg.apache.org/puffin-spec/#file-structure</a></li>
+<li><a href="https://www.dremio.com/blog/puffins-and-icebergs-additional-stats-for-apache-iceberg-tables/">https://www.dremio.com/blog/puffins-and-icebergs-additional-stats-for-apache-iceberg-tables/</a></li>
+<li><a href="https://speakerdeck.com/tomtanaka/apache-iceberg-meetup-in-japan-number-1-iceberg-v3-spec">https://speakerdeck.com/tomtanaka/apache-iceberg-meetup-in-japan-number-1-iceberg-v3-spec</a></li>
+</ul>
+]]></content:encoded></item><item><title><![CDATA[2024年のTrinoへのコントリビュートまとめ]]></title><description><![CDATA[<p>2024&#x5E74;&#x306B;Trino&#x306B;&#x30B3;&#x30F3;&#x30C8;&#x30EA;&#x30D3;&#x30E5;&#x30FC;&#x30C8;&#x3057;&#x305F;&#x8A18;&#x9332;&#x3092;&#x307E;&#x3068;&#x3081;&#x3066;&#x307F;&#x307E;&#x3057;&#x305F;&#x3002;&#x30D0;&#x30B0;&#x306E;&#x4FEE;&#x6B63;&#x306A;&#x3069;&#x306F;&#x9664;&#x5916;&#x3057;&#x3066;&#x3001;&#x30E6;&#x30FC;&#x30B6;&#x30FC;&#x306B;&#x95A2;&#x308F;&#x308B;&#x6A5F;&#x80FD;</p>]]></description><link>https://ebyhr.github.io/2024-trino-contribution/</link><guid isPermaLink="false">6a9cace6e2eeff3d01462a4f</guid><category><![CDATA[Trino]]></category><dc:creator><![CDATA[Yuya Ebihara]]></dc:creator><pubDate>Tue, 31 Dec 2024 00:00:00 GMT</pubDate><content:encoded><![CDATA[<p>2024&#x5E74;&#x306B;Trino&#x306B;&#x30B3;&#x30F3;&#x30C8;&#x30EA;&#x30D3;&#x30E5;&#x30FC;&#x30C8;&#x3057;&#x305F;&#x8A18;&#x9332;&#x3092;&#x307E;&#x3068;&#x3081;&#x3066;&#x307F;&#x307E;&#x3057;&#x305F;&#x3002;&#x30D0;&#x30B0;&#x306E;&#x4FEE;&#x6B63;&#x306A;&#x3069;&#x306F;&#x9664;&#x5916;&#x3057;&#x3066;&#x3001;&#x30E6;&#x30FC;&#x30B6;&#x30FC;&#x306B;&#x95A2;&#x308F;&#x308B;&#x6A5F;&#x80FD;&#x306B;&#x3057;&#x307C;&#x3063;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p><p>Delta Lake&#x30B3;&#x30CD;&#x30AF;&#x30BF;&#x306F;delta-kernel&#x3092;&#x5229;&#x7528;&#x305B;&#x305A;&#x306B;&#x30C8;&#x30E9;&#x30F3;&#x30B6;&#x30AF;&#x30B7;&#x30E7;&#x30F3;&#x30ED;&#x30B0;&#x3084;&#x30C1;&#x30A7;&#x30C3;&#x30AF;&#x30DD;&#x30A4;&#x30F3;&#x30C8;&#x306E;&#x30D1;&#x30FC;&#x30B9;&#x3092;&#x59CB;&#x3081;&#x3001;&#x8AAD;&#x307F;&#x66F8;&#x304D;&#x3092;&#x81EA;&#x524D;&#x3067;&#x5B9F;&#x88C5;&#x3057;&#x3066;&#x3044;&#x308B;&#x3053;&#x3068;&#x3082;&#x3042;&#x308A;&#x3001;&#x3053;&#x3053;2&#x5E74;&#x306F;&#x4F5C;&#x696D;&#x91CF;&#x304C;&#x591A;&#x304B;&#x3063;&#x305F;&#x306E;&#x3067;&#x3059;&#x304C;&#x3001;Delta&#x5074;&#x304C;<a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md#table-features">Table Features</a>&#x3092;&#x5C0E;&#x5165;&#x3057;&#x3066;&#x304B;&#x3089;&#x306F;reader&#x3068;writer&#x306E;&#x30D0;&#x30FC;&#x30B8;&#x30E7;&#x30F3;&#x304C;&#x3042;&#x304C;&#x3089;&#x306A;&#x304F;&#x306A;&#x308A;&#x3001;&#x843D;&#x3061;&#x7740;&#x3044;&#x3066;&#x304D;&#x307E;&#x3057;&#x305F;&#x3002;<a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md">&#x30D7;&#x30ED;&#x30C8;&#x30B3;&#x30EB;</a>&#x3084;<a href="https://github.com/delta-io/delta/tree/master/protocol_rfcs">RFC</a>&#x3082;&#x4EE5;&#x524D;&#x307B;&#x3069;&#x983B;&#x7E41;&#x306B;&#x306F;&#x5909;&#x66F4;&#x3055;&#x308C;&#x3066;&#x3044;&#x306A;&#x3044;&#x5370;&#x8C61;&#x3092;&#x53D7;&#x3051;&#x307E;&#x3059;&#x3002;</p><p>&#x305D;&#x3046;&#x3044;&#x3063;&#x305F;&#x80CC;&#x666F;&#x3082;&#x3042;&#x308A;&#x3001;Delta Lake&#x306E;<a href="https://github.com/delta-io/delta/blob/master/protocol_rfcs/variant-type.md">Variant&#x578B;</a>&#x306E;&#x5BFE;&#x5FDC;&#x304C;&#x307E;&#x3060;&#x9032;&#x884C;&#x4E2D;&#x3067;&#x3059;&#x304C;&#x3001;&#x5148;&#x6708;&#x304B;&#x3089;&#x306F;&#x57FA;&#x672C;&#x7684;&#x306B;Iceberg&#x306E;&#x307F;&#x306B;&#x5B8C;&#x5168;&#x306B;&#x6CE8;&#x529B;&#x3057;&#x3066;&#x3044;&#x304F;&#x3053;&#x3068;&#x306B;&#x306A;&#x308A;&#x307E;&#x3057;&#x305F;&#x3002;&#x73FE;&#x5728;&#x306F;Iceberg&#x30B3;&#x30CD;&#x30AF;&#x30BF;&#x3092;WAP&#xFF08;Write-Audit-Publish&#xFF09;&#x30D1;&#x30BF;&#x30FC;&#x30F3;&#x3092;&#x5B9F;&#x73FE;&#x3067;&#x304D;&#x308B;&#x3088;&#x3046;&#x306B;&#x30B7;&#x30F3;&#x30BF;&#x30C3;&#x30AF;&#x30B9;&#x306E;&#x8FFD;&#x52A0;&#x3092;&#x9032;&#x3081;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;&#x3042;&#x3068;&#x306F;<a href="https://iceberg.apache.org/spec/#version-3-extended-types-and-capabilities">V3&#x30B9;&#x30DA;&#x30C3;&#x30AF;</a>&#x306B;&#x3064;&#x3044;&#x3066;&#x3082;&#x5BFE;&#x5FDC;&#x4E2D;&#x3067;&#x3059;&#x3002;</p><h2 id="iceberg">Iceberg</h2><ul><li><code>add_files</code>&#x304A;&#x3088;&#x3073;<code>add_files_from_table</code>&#x30D7;&#x30ED;&#x30B7;&#x30FC;&#x30B8;&#x30E3;&#x306E;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/22751">#22751</a><ul><li>Spark&#x306E;&#x30D7;&#x30ED;&#x30B7;&#x30FC;&#x30B8;&#x30E3;&#x3068;&#x57FA;&#x672C;&#x7684;&#x306B;&#x306F;&#x540C;&#x3058;&#x3088;&#x3046;&#x306B;&#x52D5;&#x4F5C;&#x3057;&#x307E;&#x3059;&#x304C;&#x3001;1&#x3064;&#x9055;&#x3044;&#x3092;&#x6319;&#x3052;&#x308B;&#x3068;&#x30B9;&#x30AD;&#x30FC;&#x30DE;&#x306E;&#x30D0;&#x30EA;&#x30C7;&#x30FC;&#x30B7;&#x30E7;&#x30F3;&#x3092;&#x8FFD;&#x52A0;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;Spark&#x3067;&#x306F;<code>NOT NULL</code>&#x30AB;&#x30E9;&#x30E0;&#x306B;&#x5BFE;&#x3057;&#x3066;&#x3082;<code>NULL</code>&#x304C;&#x5165;&#x3063;&#x305F;&#x30D5;&#x30A1;&#x30A4;&#x30EB;&#x3092;&#x8FFD;&#x52A0;&#x3067;&#x304D;&#x308B;&#x306E;&#x3067;&#x3059;&#x304C;&#x3001;Trino&#x5074;&#x3067;&#x306F;&#x30A8;&#x30E9;&#x30FC;&#x3092;&#x6295;&#x3052;&#x308B;&#x3088;&#x3046;&#x306B;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</li></ul></li><li><code>$all_manifests</code>&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/24330">#24330</a></li><li><code>$all_entries</code>&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/24543">#24543</a></li><li><code>$entries</code>&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/24172">#24172</a></li><li><code>ALTER COLUMN ... DROP NOT NULL</code>&#x30B9;&#x30C6;&#x30FC;&#x30C8;&#x30E1;&#x30F3;&#x30C8;&#x306E;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/issues/20448">#20448</a></li></ul><h2 id="delta-lake">Delta Lake</h2><ul><li>Deletion Vector&#x306E;&#x66F8;&#x304D;&#x8FBC;&#x307F;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/pull/22102">#22102</a></li><li>&#x30BF;&#x30A4;&#x30E0;&#x30C8;&#x30E9;&#x30D9;&#x30EB;&#x30AF;&#x30A8;&#x30EA;&#x306E;&#x30B5;&#x30DD;&#x30FC;&#x30C8;<a href="https://github.com/trinodb/trino/pull/21052">#21052</a></li><li>&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x3092;&#x30E1;&#x30BF;&#x30B9;&#x30C8;&#x30A2;&#x306B;&#x30D0;&#x30C3;&#x30AF;&#x30B0;&#x30E9;&#x30A6;&#x30F3;&#x30C9;&#x3067;&#x4FDD;&#x5B58; <a href="https://github.com/trinodb/trino/pull/21463">#21463</a></li><li>Delta Lake&#x3084;Iceberg&#x3067;&#x3088;&#x304F;&#x554F;&#x984C;&#x306B;&#x306A;&#x308B;&#x306E;&#x304C; <code>information_schema</code>&#x7B49;&#x304B;&#x3089;&#x30AB;&#x30E9;&#x30E0;&#x60C5;&#x5831;&#x3092;&#x30EA;&#x30B9;&#x30C8;&#x3059;&#x308B;&#x306E;&#x304C;&#x9045;&#x3044;&#x3068;&#x3044;&#x3046;&#x3082;&#x306E;&#x304C;&#x3042;&#x308A;&#x307E;&#x3059;&#x3002;&#x3053;&#x308C;&#x306F;&#x6BCE;&#x56DE;&#x30B9;&#x30C8;&#x30EC;&#x30FC;&#x30B8;&#x306B;&#x5BFE;&#x3059;&#x308B;&#x30A2;&#x30AF;&#x30BB;&#x30B9;&#x304C;&#x767A;&#x751F;&#x3059;&#x308B;&#x306E;&#x304C;&#x539F;&#x56E0;&#x306A;&#x306E;&#x3067;&#x3059;&#x304C;&#x3001;&#x305D;&#x308C;&#x3092;&#x56DE;&#x907F;&#x3059;&#x308B;&#x305F;&#x3081;&#x306B;&#x30E1;&#x30BF;&#x30B9;&#x30C8;&#x30A2;&#x306E;&#x30D7;&#x30ED;&#x30D1;&#x30C6;&#x30A3;&#x306B;&#x30AB;&#x30E9;&#x30E0;&#x60C5;&#x5831;&#x3068;&#x6700;&#x65B0;&#x306E;&#x30C8;&#x30E9;&#x30F3;&#x30B6;&#x30AF;&#x30B7;&#x30E7;&#x30F3;&#x306E;&#x30D0;&#x30FC;&#x30B8;&#x30E7;&#x30F3;&#x3092;&#x8FFD;&#x52A0;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</li><li><a href="https://github.com/delta-io/delta/blob/master/protocol_rfcs/type-widening.md">Type Widening</a>&#x304C;&#x6709;&#x52B9;&#x5316;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8AAD;&#x307F;&#x8FBC;&#x307F;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/pull/22142">#22142</a></li><li>Iceberg UniForm&#x304C;&#x6709;&#x52B9;&#x306B;&#x306A;&#x3063;&#x305F;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8AAD;&#x307F;&#x8FBC;&#x307F;&#x306E;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/pull/22311">#22311</a></li><li><code>$transactions</code>&#x30E1;&#x30BF;&#x30C7;&#x30FC;&#x30BF;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/24292">#24292</a></li><li><a href="https://github.com/delta-io/delta/blob/master/PROTOCOL.md#v2-spec">V2&#x30C1;&#x30A7;&#x30C3;&#x30AF;&#x30DD;&#x30A4;&#x30F3;&#x30C8;</a> &#x304C;&#x6709;&#x52B9;&#x5316;&#x3055;&#x308C;&#x3066;&#x3044;&#x308B;&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x306E;&#x8AAD;&#x307F;&#x8FBC;&#x307F;&#x306E;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/issues/19345">#19345</a></li><li><code>ALTER COLUMN ... DROP NOT NULL</code> &#x30B9;&#x30C6;&#x30FC;&#x30C8;&#x30E1;&#x30F3;&#x30C8;&#x306E;&#x30B5;&#x30DD;&#x30FC;&#x30C8;. <a href="https://github.com/trinodb/trino/issues/20448">#20448</a></li></ul><h2 id="%E3%81%9D%E3%81%AE%E4%BB%96">&#x305D;&#x306E;&#x4ED6;</h2><ul><li>JDBC&#x7CFB;&#x306E;&#x30B3;&#x30CD;&#x30AF;&#x30BF;&#x306B; <code>execute</code>&#x30D7;&#x30ED;&#x30B7;&#x30FC;&#x30B8;&#x30E3;&#x3092;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/22556">#22556</a><ul><li><code>query</code>&#x30C6;&#x30FC;&#x30D6;&#x30EB;&#x95A2;&#x6570;&#x3067;&#x306F;&#x4E3B;&#x306B;SELECT&#x7CFB;&#x306E;&#x30AF;&#x30A8;&#x30EA;&#x3092;&#x30B5;&#x30DD;&#x30FC;&#x30C8;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x304C;&#x3001;DDL&#x3084;DML&#x3092;&#x30C7;&#x30FC;&#x30BF;&#x30BD;&#x30FC;&#x30B9;&#x5074;&#x3067;&#x5B9F;&#x884C;&#x3067;&#x304D;&#x308B;&#x3088;&#x3046;&#x306B;&#x65B0;&#x3057;&#x304F;<code>execute</code>&#x30D7;&#x30ED;&#x30B7;&#x30FC;&#x30B8;&#x30E3;&#x3092;&#x8FFD;&#x52A0;&#x3057;&#x307E;&#x3057;&#x305F;&#x3002;</li></ul></li><li>Vector&#x95A2;&#x9023;&#x306E;&#x6A5F;&#x80FD;&#x8FFD;&#x52A0;<ul><li>&#x985E;&#x4F3C;&#x6027;&#x306E;&#x691C;&#x7D22;&#x6A5F;&#x80FD;&#x306B;&#x95A2;&#x3059;&#x308B;&#x30EA;&#x30AF;&#x30A8;&#x30B9;&#x30C8;&#x304C;&#x304A;&#x5BA2;&#x3055;&#x307E;&#x304B;&#x3089;&#x6319;&#x304C;&#x3063;&#x3066;&#x3044;&#x305F;&#x306E;&#x3067;&#x3001;&#x30A8;&#x30F3;&#x30B8;&#x30F3;&#x306B;&#x95A2;&#x6570;&#x3092;&#x8FFD;&#x52A0;&#x3057;&#x3064;&#x3064;PostgreSQL&#x30B3;&#x30CD;&#x30AF;&#x30BF;&#x3092;&#x6539;&#x5584;&#x3057;&#x3066;&#x3044;&#x307E;&#x3057;&#x305F;&#x3002;<ul><li>PostgreSQL&#x30B3;&#x30CD;&#x30AF;&#x30BF;&#x3067;vector&#x578B;&#x306E;&#x8AAD;&#x307F;&#x8FBC;&#x307F;&#x3092;&#x30B5;&#x30DD;&#x30FC;&#x30C8; <a href="https://github.com/trinodb/trino/pull/22630">#22630</a><ul><li><code>euclidean_distance</code>&#x3001;<code>dot_product</code>&#x3001;<code>cosine_distance</code> &#x95A2;&#x6570;&#x3092;&#x30A8;&#x30F3;&#x30B8;&#x30F3;&#x306B;&#x8FFD;&#x52A0; <a href="https://github.com/trinodb/trino/pull/22397">#22397</a></li></ul></li></ul></li></ul></li></ul><p><code>euclidean_distance</code>&#x3001;<code>-dot_product</code>&#x3001; <code>cosine_distance</code> &#x95A2;&#x6570;&#x3092;pgvector&#x3078;&#x30D7;&#x30C3;&#x30B7;&#x30E5;&#x30C0;&#x30A6;&#x30F3; <a href="https://github.com/trinodb/trino/pull/22618">#22618</a> <a href="https://github.com/trinodb/trino/pull/23015">#23015</a>&#x3002;pgvector&#x306E;&#x8868;&#x73FE;&#x306B;&#x5408;&#x308F;&#x305B;&#x3066;&#x4EE5;&#x4E0B;&#x306E;&#x3088;&#x3046;&#x306A;&#x30EB;&#x30FC;&#x30EB;&#x3067;&#x751F;&#x6210;&#x3059;&#x308B;SQL&#x3092;&#x5185;&#x90E8;&#x7684;&#x306B;&#x66F8;&#x304D;&#x63DB;&#x3048;&#x306A;&#x304C;&#x3089;&#x30D7;&#x30C3;&#x30B7;&#x30E5;&#x30C0;&#x30A6;&#x30F3;&#x3092;&#x3057;&#x3066;&#x3044;&#x307E;&#x3059;&#x3002;</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Trino</th>
+<th>pgvector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>euclidean_distance</td>
+<td>&lt;-&gt;</td>
+</tr>
+<tr>
+<td>cosine_distance</td>
+<td>&lt;=&gt;</td>
+</tr>
+<tr>
+<td>-dot_product</td>
+<td>&lt;#&gt;</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+]]></content:encoded></item></channel></rss>
